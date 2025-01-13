@@ -17,8 +17,6 @@ param runtimeName string
 param runtimeNameAndVersion string = '${runtimeName}|${runtimeVersion}'
 param runtimeVersion string
 
-param enableDiagnosticLogging bool = true
-
 // Microsoft.Web/sites Properties
 param kind string = 'app,linux'
 
@@ -38,6 +36,7 @@ param scmDoBuildDuringDeployment bool = false
 param use32BitWorkerProcess bool = false
 param ftpsState string = 'FtpsOnly'
 param healthCheckPath string = ''
+param virtualNetworkSubnetId string = ''
 
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: name
@@ -61,12 +60,13 @@ resource appService 'Microsoft.Web/sites@2022-03-01' = {
         allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
       }
       // Diagnostic logging
-      detailedErrorLoggingEnabled: enableDiagnosticLogging
-      httpLoggingEnabled: enableDiagnosticLogging
-      requestTracingEnabled: enableDiagnosticLogging
+      detailedErrorLoggingEnabled: true
+      httpLoggingEnabled: true
+      requestTracingEnabled: true
     }
     clientAffinityEnabled: clientAffinityEnabled
     httpsOnly: true
+    virtualNetworkSubnetId: virtualNetworkSubnetId
   }
 
   identity: { type: managedIdentity ? 'SystemAssigned' : 'None' }
